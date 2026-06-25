@@ -1,0 +1,68 @@
+import type { ProviderDefinition } from "./types";
+
+export const FUTURE_INTEGRATION_PROVIDERS: ProviderDefinition[] = [
+  {
+    provider: "telegram",
+    name: "Telegram",
+    description: "Preparado para bots, mensagens e comandos.",
+    authType: "bot_token",
+    status: "available",
+    capabilities: ["messages", "commands", "notifications"],
+  },
+  {
+    provider: "google_calendar",
+    name: "Google Calendar",
+    description: "Preparado para leitura e criacao de eventos.",
+    authType: "oauth2",
+    status: "available",
+    capabilities: ["calendar.read", "calendar.write", "events"],
+  },
+  {
+    provider: "gmail",
+    name: "Gmail",
+    description: "Preparado para emails, filtros e notificacoes.",
+    authType: "oauth2",
+    status: "available",
+    capabilities: ["mail.read", "mail.send", "labels"],
+  },
+  {
+    provider: "whatsapp",
+    name: "WhatsApp",
+    description: "Preparado para mensagens e webhooks de entrada.",
+    authType: "custom",
+    status: "available",
+    capabilities: ["messages", "webhooks"],
+  },
+  {
+    provider: "discord",
+    name: "Discord",
+    description: "Preparado para bots, canais e notificacoes.",
+    authType: "bot_token",
+    status: "available",
+    capabilities: ["messages", "channels", "webhooks"],
+  },
+  {
+    provider: "slack",
+    name: "Slack",
+    description: "Preparado para apps, mensagens e comandos.",
+    authType: "oauth2",
+    status: "available",
+    capabilities: ["messages", "commands", "workspaces"],
+  },
+  {
+    provider: "webhooks",
+    name: "Webhooks",
+    description: "Entrada e saida HTTP para ferramentas externas.",
+    authType: "webhook",
+    status: "available",
+    capabilities: ["incoming", "outgoing", "signing"],
+  },
+  {
+    provider: "rest_api",
+    name: "APIs REST",
+    description: "Preparado para chamadas HTTP genericas.",
+    authType: "api_key",
+    status: "available",
+    capabilities: ["http.get", "http.post", "http.patch"],
+  },
+];

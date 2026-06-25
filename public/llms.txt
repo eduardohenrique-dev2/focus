@@ -1,0 +1,17 @@
+# FOCUS
+
+> Sistema operacional pessoal para organizar tarefas, calendário, metas, hábitos, estudos e finanças em uma experiência minimalista e fluida.
+
+FOCUS é uma plataforma web moderna inspirada em Notion, Linear, Todoist e Motion. Une produtividade, planejamento e organização de vida em um único centro de comando.
+
+## Páginas
+
+- [Dashboard](/): Visão geral com tarefas do dia, agenda, hábitos, foco atual e métricas de produtividade
+- [Tarefas](/tasks): Gerenciamento completo de tarefas em modo lista ou kanban com prioridades e categorias
+- [Calendário](/calendar): Agenda com eventos, lembretes e time blocking
+- [Notas](/notes): Central de notas estilo segundo cérebro
+- [Metas](/goals): Metas diárias, semanais, mensais e anuais com progresso visual
+- [Hábitos](/habits): Tracker de hábitos com streaks e estatísticas
+- [Estudos](/studies): Área de estudos com flashcards, Pomodoro e cronograma
+- [Finanças](/finance): Controle financeiro pessoal
+- [Equipes](/teams): Colaboração para projetos, equipes e eventos
