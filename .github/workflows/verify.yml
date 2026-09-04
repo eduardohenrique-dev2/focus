@@ -1,0 +1,33 @@
+name: Verify FOCUS
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - fix/focus-stability-20260904
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      VITE_DATA_BACKEND: local
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+          cache-dependency-path: package.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build local mode
+        run: npm run build

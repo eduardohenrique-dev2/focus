@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /** Debounce a value so the consumer effect runs once per pause. */
 export function useDebounced<T>(value: T, delay = 600): T {
   const [debounced, setDebounced] = useState(value);
+
   useEffect(() => {
-    const t = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
   }, [value, delay]);
+
   return debounced;
 }
 
@@ -17,12 +19,23 @@ export function useAutoSaveStatus() {
   const [status, setStatus] = useState<SaveStatus>("idle");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const set = (s: SaveStatus) => {
+  const set = useCallback((nextStatus: SaveStatus) => {
     if (timer.current) clearTimeout(timer.current);
-    setStatus(s);
-    if (s === "saved" || s === "error") {
-      timer.current = setTimeout(() => setStatus("idle"), 2200);
+    setStatus(nextStatus);
+
+    if (nextStatus === "saved" || nextStatus === "error") {
+      timer.current = setTimeout(() => {
+        setStatus("idle");
+        timer.current = null;
+      }, 2200);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+    };
+  }, []);
+
   return { status, set };
 }
