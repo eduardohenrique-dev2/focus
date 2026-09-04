@@ -11,10 +11,7 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     env:
-      VITE_SUPABASE_URL: https://example.supabase.co
-      VITE_SUPABASE_PUBLISHABLE_KEY: test-public-key
-      SUPABASE_URL: https://example.supabase.co
-      SUPABASE_PUBLISHABLE_KEY: test-public-key
+      VITE_DATA_BACKEND: local
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,5 +29,5 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Build
+      - name: Build local mode
         run: npm run build
