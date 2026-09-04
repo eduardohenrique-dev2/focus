@@ -17,7 +17,7 @@ O projeto não depende mais de pacotes, autenticação ou configuração da Lova
 
 ## Rodar no computador
 
-1. Instale Node.js 20 ou superior.
+1. Instale Node.js 22.12 ou superior.
 2. Na pasta do projeto, instale as dependências:
 
 ```bash
