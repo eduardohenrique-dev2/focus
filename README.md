@@ -4,15 +4,16 @@ Sistema pessoal para organizar tarefas, notas, hábitos, calendário, projetos, 
 
 ## Tecnologias
 
-O projeto usa:
+O projeto usa diretamente:
 
 - React + TypeScript
 - TanStack Start / Router
 - Supabase (login e banco de dados)
 - Tailwind CSS
 - Vite
+- Cloudflare Vite Plugin para o build/deploy atual
 
-A estrutura atual foi mantida porque trocar tudo por HTML/CSS/JavaScript puro de uma vez aumentaria o risco de quebrar autenticação, banco, rotas e deploy. As correções estão sendo feitas deixando o código mais simples e direto sempre que possível.
+O projeto não depende mais de pacotes, autenticação ou configuração da Lovable. O Vite usa os plugins oficiais do TanStack Start, React, Tailwind, Cloudflare e `vite-tsconfig-paths`.
 
 ## Rodar no computador
 
@@ -22,6 +23,8 @@ A estrutura atual foi mantida porque trocar tudo por HTML/CSS/JavaScript puro de
 ```bash
 npm install
 ```
+
+O primeiro `npm install` após a remoção da Lovable vai gerar um novo `package-lock.json` limpo.
 
 3. Crie seu arquivo de ambiente:
 
@@ -62,3 +65,16 @@ npm run build
 As migrations ficam em `supabase/migrations`.
 
 O sistema já possui políticas RLS por usuário nas tabelas principais. Mesmo assim, as telas também filtram explicitamente os registros pelo usuário autenticado para deixar o comportamento mais previsível.
+
+## Independência da Lovable
+
+Foram removidos:
+
+- `@lovable.dev/cloud-auth-js`
+- `@lovable.dev/vite-tanstack-config`
+- `src/integrations/lovable`
+- configuração específica da Lovable no `vite.config.ts`
+- exceção da Lovable no `bunfig.toml`
+- lockfiles antigos que ainda continham pacotes transitivos da Lovable
+
+O login atual funciona diretamente pelo Supabase.
