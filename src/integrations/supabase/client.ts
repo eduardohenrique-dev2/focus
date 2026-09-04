@@ -1,27 +1,37 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createLocalClient } from "./local-client";
 import type { Database } from "./types";
 
-function createSupabaseClient() {
-  // No navegador o Vite usa VITE_*; no SSR usamos as variáveis sem prefixo.
+type FocusClient = SupabaseClient<Database>;
+
+function getConfiguration() {
   const serverEnv = typeof process !== "undefined" ? process.env : undefined;
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || serverEnv?.SUPABASE_URL;
   const supabaseKey =
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || serverEnv?.SUPABASE_PUBLISHABLE_KEY;
+  const requestedBackend = String(
+    import.meta.env.VITE_DATA_BACKEND || serverEnv?.DATA_BACKEND || "auto",
+  ).toLowerCase();
 
-  if (!supabaseUrl || !supabaseKey) {
-    const missing = [
-      ...(!supabaseUrl ? ["VITE_SUPABASE_URL (ou SUPABASE_URL no servidor)"] : []),
-      ...(!supabaseKey
-        ? ["VITE_SUPABASE_PUBLISHABLE_KEY (ou SUPABASE_PUBLISHABLE_KEY no servidor)"]
-        : []),
-    ];
+  return { supabaseUrl, supabaseKey, requestedBackend };
+}
 
+function createFocusClient(): FocusClient {
+  const { supabaseUrl, supabaseKey, requestedBackend } = getConfiguration();
+  const hasSupabase = Boolean(supabaseUrl && supabaseKey);
+  const useLocal = requestedBackend === "local" || (requestedBackend === "auto" && !hasSupabase);
+
+  if (useLocal) {
+    return createLocalClient();
+  }
+
+  if (!hasSupabase) {
     throw new Error(
-      `Configuração do Supabase ausente: ${missing.join(", ")}. Copie .env.example para .env e preencha os valores.`,
+      "O modo Supabase foi solicitado, mas VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY não foram configurados. Use VITE_DATA_BACKEND=local ou configure o Supabase.",
     );
   }
 
-  return createClient<Database>(supabaseUrl, supabaseKey, {
+  return createClient<Database>(supabaseUrl!, supabaseKey!, {
     auth: {
       storage: typeof window !== "undefined" ? localStorage : undefined,
       persistSession: true,
@@ -30,12 +40,19 @@ function createSupabaseClient() {
   });
 }
 
-let supabaseClient: ReturnType<typeof createSupabaseClient> | undefined;
+export function getDataBackend(): "local" | "supabase" {
+  const { supabaseUrl, supabaseKey, requestedBackend } = getConfiguration();
+  if (requestedBackend === "local") return "local";
+  if (requestedBackend === "supabase") return "supabase";
+  return supabaseUrl && supabaseKey ? "supabase" : "local";
+}
 
-// Cliente criado sob demanda para funcionar tanto no navegador quanto no SSR.
-export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
+let focusClient: FocusClient | undefined;
+
+// Um único cliente para as telas. Sem .env o FOCUS usa banco local automaticamente.
+export const supabase = new Proxy({} as FocusClient, {
   get(_, prop, receiver) {
-    if (!supabaseClient) supabaseClient = createSupabaseClient();
-    return Reflect.get(supabaseClient, prop, receiver);
+    if (!focusClient) focusClient = createFocusClient();
+    return Reflect.get(focusClient, prop, receiver);
   },
 });
